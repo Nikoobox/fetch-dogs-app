@@ -5,8 +5,9 @@ import { CircularProgress } from "@mui/material";
 
 import { ProtectedRoute } from "./components/Auth";
 import AppProviders from "./components/Providers";
-import "./App.css";
+import Navbar from "./components/Navbar";
 import { useAppSelector } from "./hooks";
+import "./App.css";
 
 const Login = lazy(() => import("./components/Login"));
 const SearchPage = lazy(() => import("./components/SearchPage"));
@@ -24,25 +25,28 @@ const AppContent = () => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   return (
-    <Suspense
-      fallback={
-        <CircularProgress style={{ display: "block", margin: "auto" }} />
-      }
-    >
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
+    <>
+      <Navbar />
+      <Suspense
+        fallback={
+          <CircularProgress style={{ display: "block", margin: "auto" }} />
+        }
+      >
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/search"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <SearchPage />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Suspense>
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <SearchPage />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Suspense>
+    </>
   );
 };
 

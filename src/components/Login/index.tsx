@@ -86,6 +86,7 @@ const Login: FC = () => {
             variant="contained"
             color="primary"
             sx={{ mt: 3, mb: 2 }}
+            disableElevation
           >
             Login
           </Button>
