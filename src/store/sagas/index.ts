@@ -11,8 +11,11 @@ import {
   onAutenticateUser,
   onAutenticateUserSuccess,
   onAutenticateUserError,
+  onLogoutUser,
+  onLogoutUserSuccess,
+  onLogoutUserError,
 } from "../../features/auth";
-import { authLoginAPI, ApiReturnType } from "../../api";
+import { authLoginAPI, ApiReturnType, authLogoutAPI } from "../../api";
 import { LoginFormData } from "../../components/Login";
 
 type AuthUserActionType = ReturnType<typeof onAutenticateUser> & {
@@ -36,11 +39,36 @@ function* authenticateUser(
   }
 }
 
+function* logoutUser(): Generator<
+  CallEffect<boolean> | PutEffect<any>,
+  void,
+  any
+> {
+  try {
+    const success: boolean = yield call(authLogoutAPI);
+    if (success) {
+      yield put(onLogoutUserSuccess());
+    } else {
+      yield put(onLogoutUserError("Logout failed."));
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(onLogoutUserError(e.message));
+    } else {
+      yield put(onLogoutUserError("An unknown error occurred."));
+    }
+  }
+}
+
 function* authenticateUserSaga() {
   yield takeEvery(onAutenticateUser, authenticateUser);
 }
 
+function* logoutUserSaga() {
+  yield takeEvery(onLogoutUser, logoutUser);
+}
+
 function* rootSaga() {
-  yield all([authenticateUserSaga()]);
+  yield all([authenticateUserSaga(), logoutUserSaga()]);
 }
 export default rootSaga;

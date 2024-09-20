@@ -6,8 +6,8 @@ import { LoginFormData } from "../../components/Login";
 export interface AuthState {
   userName: string;
   userEmail: string;
-  isLoading: boolean;
   isAuthenticated: boolean;
+  isLoading: boolean;
   error: string | null;
 }
 
@@ -20,7 +20,7 @@ const initialState: AuthState = {
 };
 
 export const authSlice = createSlice({
-  name: "auth",
+  name: "dogs",
   initialState,
   reducers: {
     onAutenticateUser: (state, _action: PayloadAction<LoginFormData>) => {
@@ -41,22 +41,6 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-
-    onLogoutUser: (state) => {
-      state.isLoading = true;
-      state.error = null;
-    },
-    onLogoutUserSuccess: (state) => {
-      state.userName = "";
-      state.userEmail = "";
-      state.isLoading = false;
-      state.isAuthenticated = false;
-      state.error = null;
-    },
-    onLogoutUserError: (state, action: PayloadAction<string>) => {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
   },
 });
 
@@ -64,9 +48,6 @@ export const {
   onAutenticateUser,
   onAutenticateUserSuccess,
   onAutenticateUserError,
-  onLogoutUser,
-  onLogoutUserSuccess,
-  onLogoutUserError,
 } = authSlice.actions;
 
 export default authSlice.reducer;
