@@ -1,5 +1,5 @@
 // import React from "react";
-import { AppBar, Toolbar, Typography, Button } from "@mui/material";
+import { AppBar, Toolbar, Typography, Button, Container } from "@mui/material";
 import { useAppSelector, useAppDispatch } from "../../hooks"; // Adjust the path as necessary
 import { onLogoutUser } from "../../features/auth"; // Adjust the path as necessary
 
@@ -13,32 +13,34 @@ const Navbar = () => {
 
   return (
     <AppBar position="static" elevation={0}>
-      <Toolbar>
-        <Typography variant="h6" style={{ flexGrow: 1 }}>
-          Fetch a 🐶
-        </Typography>
-        {userName && (
-          <>
-            <Typography variant="body1" style={{ marginRight: "20px" }}>
-              {userName}
-            </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "white",
-                color: "black",
-                "&:hover": {
-                  backgroundColor: "#f5f5f5",
-                },
-              }}
-              onClick={handleLogout}
-              disableElevation
-            >
-              Log Out
-            </Button>
-          </>
-        )}
-      </Toolbar>
+      <Container maxWidth="lg">
+        <Toolbar disableGutters>
+          <Typography variant="h6" style={{ flexGrow: 1 }}>
+            Fetch a 🐶
+          </Typography>
+          {userName && (
+            <>
+              <Typography variant="body1" style={{ marginRight: "20px" }}>
+                {userName}
+              </Typography>
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "white",
+                  color: "black",
+                  "&:hover": {
+                    backgroundColor: "#f5f5f5",
+                  },
+                }}
+                onClick={handleLogout}
+                disableElevation
+              >
+                Log Out
+              </Button>
+            </>
+          )}
+        </Toolbar>
+      </Container>
     </AppBar>
   );
 };
