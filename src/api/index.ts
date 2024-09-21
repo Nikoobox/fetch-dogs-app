@@ -33,7 +33,7 @@ interface DogSearchParams {
 export interface DogSearchReturnType {
   resultIds: string[];
   total: number;
-  dogs: Dog[]; // Array of Dog objects
+  dogs: Dog[];
   next?: string;
   prev?: string;
 }
@@ -126,7 +126,7 @@ const fetchDogsAPI = async (
       arrayFormat: "comma",
       skipNulls: true,
     });
-
+    console.log("queryParams", queryParams);
     const response = await fetch(`${DOGS_SEARCH_URL}?${queryParams}`, {
       method: "GET",
       headers: {
@@ -146,4 +146,34 @@ const fetchDogsAPI = async (
   }
 };
 
-export { authLoginAPI, authLogoutAPI, fetchBreedsAPI, fetchDogsAPI };
+const fetchDogDetailsAPI = async (dogIds: string[]): Promise<Dog[]> => {
+  const DOGS_DETAILS_URL = `${BASE_URL}/dogs`;
+
+  try {
+    const response = await fetch(DOGS_DETAILS_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // Include the auth cookie
+      body: JSON.stringify(dogIds), // Send an array of dog IDs
+    });
+
+    if (response.ok) {
+      const dogs = await response.json();
+      return dogs; // Expecting an array of dog objects
+    } else {
+      throw new Error("Failed to fetch dog details.");
+    }
+  } catch (_error) {
+    throw new Error("Failed to fetch dog details.");
+  }
+};
+
+export {
+  authLoginAPI,
+  authLogoutAPI,
+  fetchBreedsAPI,
+  fetchDogsAPI,
+  fetchDogDetailsAPI,
+};
