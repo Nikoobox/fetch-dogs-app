@@ -1,6 +1,7 @@
 import { useEffect, FC, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import qs from "qs"; // Importing 'qs' for query string handling
+import { debounce } from "lodash";
 
 import {
   TextField,
@@ -21,6 +22,7 @@ const SearchPage: FC = () => {
   const dispatch = useAppDispatch();
   const dogsState = useAppSelector((state) => state.dogs);
   const { dogDetails, isLoading, queryParams } = dogsState;
+  console.log("STATE dogsState", dogsState);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -41,12 +43,8 @@ const SearchPage: FC = () => {
         const { scrollTop, scrollHeight, clientHeight } = tableRef.current;
 
         if (scrollTop + clientHeight >= scrollHeight - 50 && !isLoading) {
-          console.log(
-            ' sx={{ maxHeight: "400px", overflowY: "auto" }}',
-            scrollTop + clientHeight >= scrollHeight - 50 && !isLoading
-          );
           if (queryParams?.from) {
-            dispatch(onSearchDogs(queryParams));
+            dispatch(onSearchDogs({ queryParams }));
 
             setSearchParams(qs.stringify(queryParams, { skipNulls: true }));
           }
@@ -54,11 +52,13 @@ const SearchPage: FC = () => {
       }
     };
 
+    const debouncedScrollHandler = debounce(handleScroll, 500); // 300ms delay
+
     const currentTable = tableRef.current;
-    currentTable?.addEventListener("scroll", handleScroll);
+    currentTable?.addEventListener("scroll", debouncedScrollHandler);
 
     return () => {
-      currentTable?.removeEventListener("scroll", handleScroll);
+      currentTable?.removeEventListener("scroll", debouncedScrollHandler);
     };
   }, [dispatch, isLoading, queryParams?.from]);
 
@@ -75,8 +75,10 @@ const SearchPage: FC = () => {
       ageMin: ageMin ? Number(ageMin) : undefined,
       ageMax: ageMax ? Number(ageMax) : undefined,
       from: undefined,
+      sort: "breed:asc", // default sorting
     };
-    dispatch(onSearchDogs(newSearchParams));
+
+    dispatch(onSearchDogs({ queryParams: newSearchParams, isNewSort: true }));
 
     const updatedParams = {
       ...Object.fromEntries(searchParams), // Preserve existing params (this could be deleted)
@@ -84,6 +86,29 @@ const SearchPage: FC = () => {
     };
 
     setSearchParams(qs.stringify(updatedParams, { skipNulls: true }));
+  };
+
+  const handleSort = (field: "breed" | "name" | "age" | "zip_code") => {
+    const currentSortOrder =
+      queryParams?.sort?.split(":")[0] === field &&
+      queryParams.sort.endsWith("asc")
+        ? "desc"
+        : "asc";
+
+    const newQueryParams = {
+      sort: `${field}:${currentSortOrder}`, // Update the sort params
+      from: undefined, // Reset pagination when sorting
+    };
+
+    if (tableRef.current) {
+      tableRef.current.scrollTop = 0;
+    }
+
+    // Set the new query parameters to the URL
+    setSearchParams(qs.stringify(newQueryParams, { skipNulls: true }));
+    console.log("### handleSort", newQueryParams);
+
+    dispatch(onSearchDogs({ queryParams: newQueryParams, isNewSort: true }));
   };
 
   const hasZipCodes = !!zipCodes.length;
@@ -188,6 +213,8 @@ const SearchPage: FC = () => {
               dogData={dogDetails}
               isLoading={isLoading}
               tableRef={tableRef}
+              onSort={handleSort} // Pass handleSort as a prop
+              sortInfo={queryParams?.sort}
             />
           ) : (
             <Typography>No results found.</Typography>
