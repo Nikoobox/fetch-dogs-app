@@ -1,4 +1,4 @@
-import { useState, Suspense, lazy } from "react";
+import { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import { CircularProgress } from "@mui/material";
@@ -46,6 +46,24 @@ const AppContent = () => {
           />
         </Routes>
       </Suspense>
+
+      {/* <Suspense
+        fallback={
+          <CircularProgress style={{ display: "block", margin: "auto" }} />
+        }
+      >
+        <Routes>
+          <Route path="/" element={<Navigate to="/search" />} />
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute isAuthenticated={true}>
+                <SearchPage />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Suspense> */}
     </>
   );
 };

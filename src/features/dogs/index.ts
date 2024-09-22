@@ -1,43 +1,91 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  DogSearchReturnType,
+  DogSearchParams,
+  DogProps,
+  MatchProps,
+} from "../../api";
 
-import { LoginFormData } from "../../components/Login";
-
-export interface AuthState {
-  userName: string;
-  userEmail: string;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
+interface SortingOptions {
+  sortField: string; // e.g., "breed" or "age"
+  sortOrder: "asc" | "desc"; // or any other sorting criteria you plan to support
 }
 
-const initialState: AuthState = {
-  userName: "",
-  userEmail: "",
+interface DogsState {
+  breeds: string[];
+  searchResults: DogSearchReturnType | null;
+  dogDetails: DogProps[];
+  matchingDog: MatchProps | null; // Added property for the matched dog ID
+  isLoading: boolean;
+  error: string | null;
+  queryParams: DogSearchParams | null; // Store all query parameters
+  sorting?: SortingOptions; // New property for sorting
+}
+
+const initialState: DogsState = {
+  breeds: [],
+  searchResults: null,
+  dogDetails: [],
   isLoading: false,
-  isAuthenticated: false,
   error: null,
+  matchingDog: null,
+  queryParams: null, // Initialize to null or {}
+  sorting: {
+    sortField: "breed", // Default sorting field
+    sortOrder: "asc", // Default sorting order
+  },
 };
 
-export const authSlice = createSlice({
+interface OnSearchDogsSuccessActionType {
+  searchResults: DogSearchReturnType;
+  dogDetails: DogProps[];
+  queryParams: DogSearchParams | null;
+}
+
+const dogsSlice = createSlice({
   name: "dogs",
   initialState,
   reducers: {
-    onAutenticateUser: (state, _action: PayloadAction<LoginFormData>) => {
-      state.userName = "";
-      state.userEmail = "";
+    onFetchBreeds: (state) => {
       state.isLoading = true;
-      state.isAuthenticated = false;
-      state.error = null;
     },
-    onAutenticateUserSuccess: (state, action: PayloadAction<LoginFormData>) => {
-      state.userName = action.payload.userName;
-      state.userEmail = action.payload.userEmail;
-      state.isAuthenticated = true;
+    onFetchBreedsSuccess: (state, action: PayloadAction<string[]>) => {
       state.isLoading = false;
-      state.error = null;
+      state.breeds = action.payload;
     },
-    onAutenticateUserError: (state, action: PayloadAction<string>) => {
+    onFetchBreedsError: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+
+    onSearchDogs: (state, _action: PayloadAction<DogSearchParams>) => {
+      state.isLoading = true;
+    },
+    onSearchDogsSuccess: (
+      state,
+      action: PayloadAction<OnSearchDogsSuccessActionType>
+    ) => {
+      const { searchResults, dogDetails, queryParams } = action.payload;
+
+      state.isLoading = false;
+      state.searchResults = searchResults;
+      state.dogDetails = [...state.dogDetails, ...dogDetails];
+      state.queryParams = queryParams;
+    },
+    onSearchDogsError: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+
+    // New actions for matching dog
+    onMatchDog: (state, _action: PayloadAction<string[]>) => {
+      state.isLoading = true;
+    },
+    onMatchDogSuccess: (state, action: PayloadAction<MatchProps>) => {
+      state.isLoading = false;
+      state.matchingDog = action.payload; // Set the matched dog ID
+    },
+    onMatchDogError: (state, action: PayloadAction<string>) => {
       state.isLoading = false;
       state.error = action.payload;
     },
@@ -45,9 +93,15 @@ export const authSlice = createSlice({
 });
 
 export const {
-  onAutenticateUser,
-  onAutenticateUserSuccess,
-  onAutenticateUserError,
-} = authSlice.actions;
+  onFetchBreeds,
+  onFetchBreedsSuccess,
+  onFetchBreedsError,
+  onSearchDogs,
+  onSearchDogsSuccess,
+  onSearchDogsError,
+  onMatchDog,
+  onMatchDogSuccess,
+  onMatchDogError,
+} = dogsSlice.actions;
 
-export default authSlice.reducer;
+export default dogsSlice.reducer;

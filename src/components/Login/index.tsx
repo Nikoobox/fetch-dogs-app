@@ -2,7 +2,6 @@ import { useEffect, useState, FC, FormEvent, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-// import { useTheme } from "@mui/material/styles";
 
 import { onAutenticateUser } from "../../features/auth";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -18,7 +17,6 @@ const Login: FC = () => {
     userEmail: "",
   });
   const navigate = useNavigate();
-  //   const theme = useTheme();
   const dispatch = useAppDispatch();
   const { isAuthenticated, error } = useAppSelector((state) => state.auth);
 
