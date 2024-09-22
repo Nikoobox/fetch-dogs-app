@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 import { LoginFormData } from "../../components/Login";
 
-export interface AuthState {
+interface AuthSliceState {
   userName: string;
   userEmail: string;
   isLoading: boolean;
@@ -11,7 +11,7 @@ export interface AuthState {
   error: string | null;
 }
 
-const initialState: AuthState = {
+const initialState: AuthSliceState = {
   userName: "",
   userEmail: "",
   isLoading: false,

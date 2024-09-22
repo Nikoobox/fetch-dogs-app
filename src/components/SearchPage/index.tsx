@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, FC, useState, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
+import qs from "qs"; // Importing 'qs' for query string handling
+
 import {
   TextField,
   Button,
@@ -8,30 +11,52 @@ import {
   Box,
 } from "@mui/material";
 
-import { fetchBreedsAPI, fetchDogsAPI, DogSearchReturnType } from "../../api";
+import { DogSearchParams } from "../../api";
 import BreedsAutocomplete from "../BreedsAutocomplete";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { onFetchBreeds, onSearchDogs } from "../../features/dogs";
+import Table from "../Table";
 
-const SearchPage: React.FC = () => {
-  const [breeds, setBreeds] = useState<string[]>([]);
-  const [zipCode, setZipCode] = useState<string>(""); // Single zip code input
+const SearchPage: FC = () => {
+  const dispatch = useAppDispatch();
+  const dogsState = useAppSelector((state) => state.dogs);
+  const { dogDetails, isLoading, queryParams } = dogsState;
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [selectedBreeds, setSelectedBreeds] = useState<string[]>([]);
+  const [zipCode, setZipCode] = useState<string>("");
   const [zipCodes, setZipCodes] = useState<string[]>([]);
   const [ageMin, setAgeMin] = useState<number | string>("");
   const [ageMax, setAgeMax] = useState<number | string>("");
-  const [searchResults, setSearchResults] =
-    useState<DogSearchReturnType | null>(null);
-  console.log("zipCodes", zipCodes);
+  const tableRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const handleFetchBreeds = async () => {
-      try {
-        const breeds = await fetchBreedsAPI();
-        console.log("breeds", breeds);
-      } catch (error) {
-        console.error("Error fetching breeds:", error);
+    dispatch(onFetchBreeds());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (tableRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = tableRef.current;
+
+        if (scrollTop + clientHeight >= scrollHeight - 50 && !isLoading) {
+          if (queryParams?.from) {
+            dispatch(onSearchDogs(queryParams));
+
+            setSearchParams(qs.stringify(queryParams, { skipNulls: true }));
+          }
+        }
       }
     };
 
-    handleFetchBreeds();
-  }, []);
+    const currentTable = tableRef.current;
+    currentTable?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      currentTable?.removeEventListener("scroll", handleScroll);
+    };
+  }, [dispatch, isLoading, queryParams?.from]);
 
   const handleAddZipCode = () => {
     if (zipCode) {
@@ -39,41 +64,38 @@ const SearchPage: React.FC = () => {
       setZipCode("");
     }
   };
+  const handleSearch = () => {
+    const newSearchParams: DogSearchParams = {
+      breeds: selectedBreeds.length ? selectedBreeds : undefined,
+      zipCodes: zipCodes.filter((zip) => zip),
+      ageMin: ageMin ? Number(ageMin) : undefined,
+      ageMax: ageMax ? Number(ageMax) : undefined,
+      from: undefined,
+    };
+    dispatch(onSearchDogs(newSearchParams));
 
-  const handleSearch = async () => {
-    try {
-      const searchParams = {
-        breeds: breeds || undefined,
-        zipCodes: zipCodes.filter((zip) => zip), // Filter out empty zip codes
-        ageMin: ageMin ? Number(ageMin) : undefined,
-        ageMax: ageMax ? Number(ageMax) : undefined,
-      };
+    const updatedParams = {
+      ...Object.fromEntries(searchParams), // Preserve existing params (this could be deleted)
+      ...newSearchParams, // Add new search parameters
+    };
 
-      const data = await fetchDogsAPI(searchParams);
-      setSearchResults(data);
-    } catch (error) {
-      console.error("Error fetching dogs:", error);
-    }
+    setSearchParams(qs.stringify(updatedParams, { skipNulls: true }));
   };
 
   const hasZipCodes = !!zipCodes.length;
 
-  console.log("searchResults", searchResults);
-
   return (
-    <Container
-      maxWidth="lg"
-      sx={{
-        mt: 8,
-      }}
-    >
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
       <Grid container spacing={2}>
         <Grid size={{ xs: 12 }}>
-          <Typography variant="h4">Search for Dogs</Typography>
+          <Typography variant="h6">Search for Dogs</Typography>
         </Grid>
         <Grid size={{ xs: 12 }}>
           <Box display="flex" flexDirection="column" gap={2}>
-            <BreedsAutocomplete setBreeds={setBreeds} selectedBreeds={breeds} />
+            <BreedsAutocomplete
+              setBreeds={setSelectedBreeds}
+              selectedBreeds={selectedBreeds}
+            />
 
             <Box display="flex" alignItems="center" gap={2}>
               <TextField
@@ -83,6 +105,7 @@ const SearchPage: React.FC = () => {
                 onChange={(e) => setZipCode(e.target.value)}
                 variant="outlined"
                 fullWidth
+                size="small"
               />
               <Button
                 variant="contained"
@@ -97,9 +120,7 @@ const SearchPage: React.FC = () => {
                   variant="contained"
                   color="error"
                   onClick={() => setZipCodes([])}
-                  style={{
-                    whiteSpace: "nowrap",
-                  }}
+                  style={{ whiteSpace: "nowrap" }}
                   disableElevation
                 >
                   Clear All
@@ -109,7 +130,7 @@ const SearchPage: React.FC = () => {
             {hasZipCodes && (
               <Box display="flex" gap={1}>
                 {zipCodes.map((zCode) => (
-                  <Box>{zCode}</Box>
+                  <Box key={zCode}>{zCode}</Box>
                 ))}
               </Box>
             )}
@@ -124,9 +145,8 @@ const SearchPage: React.FC = () => {
                   }
                   variant="outlined"
                   fullWidth
-                  inputProps={{
-                    min: 0,
-                  }}
+                  inputProps={{ min: 0 }}
+                  size="small"
                 />
               </Grid>
               <Grid size={{ xs: 6 }}>
@@ -139,9 +159,8 @@ const SearchPage: React.FC = () => {
                   }
                   variant="outlined"
                   fullWidth
-                  inputProps={{
-                    min: 0,
-                  }}
+                  inputProps={{ min: 0 }}
+                  size="small"
                 />
               </Grid>
             </Grid>
@@ -159,22 +178,16 @@ const SearchPage: React.FC = () => {
         </Grid>
 
         <Grid size={{ xs: 12 }}>
-          {/* {searchResults && searchResults?.dogs.length > 0 ? (
-            <div>
-              <Typography variant="h6">Search Results:</Typography>
-              <ul>
-                {searchResults.dogs.map((dog) => (
-                  <li key={dog.id}>
-                    <Typography>
-                      {dog.name} - {dog.breed}
-                    </Typography>
-                  </li>
-                ))}
-              </ul>
+          {dogDetails.length > 0 ? (
+            <div
+              ref={tableRef}
+              style={{ maxHeight: "300px", overflowY: "auto" }}
+            >
+              <Table dogData={dogDetails} isLoading={isLoading} />
             </div>
           ) : (
             <Typography>No results found.</Typography>
-          )} */}
+          )}
         </Grid>
       </Grid>
     </Container>

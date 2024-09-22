@@ -2,13 +2,15 @@ import { configureStore } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 
 import authReducer from "../features/auth";
-import rootSaga from "./sagas/";
+import dogsReducer from "../features/dogs";
+import rootSaga from "./sagas";
 
 const sagaMiddleware = createSagaMiddleware();
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    dogs: dogsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sagaMiddleware),

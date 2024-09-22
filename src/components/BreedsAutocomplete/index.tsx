@@ -12,7 +12,6 @@ const BreedsAutocomplete = ({
   const [breeds, setBreedsList] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Fetch the breeds from the API
   useEffect(() => {
     const loadBreeds = async () => {
       setLoading(true);
@@ -33,19 +32,24 @@ const BreedsAutocomplete = ({
     _event: SyntheticEvent<Element, Event>,
     value: string[]
   ) => {
-    setBreeds(value); // Update with selected breeds
+    setBreeds(value); // Set the selected breeds from the Autocomplete
   };
 
   return (
     <Autocomplete
-      multiple // Enable multiple selection
-      options={breeds} // Options are the list of breeds
-      getOptionLabel={(option) => option} // Display each breed as a string
-      loading={loading} // Show a loading indicator while fetching data
-      value={selectedBreeds} // Set the current selected breeds
+      multiple
+      options={breeds}
+      getOptionLabel={(option) => option}
+      loading={loading}
+      value={selectedBreeds}
       onChange={handleChange}
       renderInput={(params) => (
-        <TextField {...params} label="Search Breeds" variant="outlined" />
+        <TextField
+          {...params}
+          label="Search Breeds"
+          variant="outlined"
+          size="small"
+        />
       )}
     />
   );
