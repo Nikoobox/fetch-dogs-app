@@ -41,6 +41,10 @@ const SearchPage: FC = () => {
         const { scrollTop, scrollHeight, clientHeight } = tableRef.current;
 
         if (scrollTop + clientHeight >= scrollHeight - 50 && !isLoading) {
+          console.log(
+            ' sx={{ maxHeight: "400px", overflowY: "auto" }}',
+            scrollTop + clientHeight >= scrollHeight - 50 && !isLoading
+          );
           if (queryParams?.from) {
             dispatch(onSearchDogs(queryParams));
 
@@ -83,10 +87,11 @@ const SearchPage: FC = () => {
   };
 
   const hasZipCodes = !!zipCodes.length;
+  const hasDogDetails = !!dogDetails.length;
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         <Grid size={{ xs: 12 }}>
           <Typography variant="h6">Search for Dogs</Typography>
         </Grid>
@@ -177,14 +182,13 @@ const SearchPage: FC = () => {
           </Box>
         </Grid>
 
-        <Grid size={{ xs: 12 }}>
-          {dogDetails.length > 0 ? (
-            <div
-              ref={tableRef}
-              style={{ maxHeight: "300px", overflowY: "auto" }}
-            >
-              <Table dogData={dogDetails} isLoading={isLoading} />
-            </div>
+        <Grid size={{ xs: 12 }} sx={{ marginTop: "16px" }}>
+          {hasDogDetails ? (
+            <Table
+              dogData={dogDetails}
+              isLoading={isLoading}
+              tableRef={tableRef}
+            />
           ) : (
             <Typography>No results found.</Typography>
           )}
