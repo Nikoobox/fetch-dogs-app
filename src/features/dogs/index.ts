@@ -7,19 +7,19 @@ import {
 } from "../../api";
 
 interface SortingOptions {
-  sortField: string; // e.g., "breed" or "age"
-  sortOrder: "asc" | "desc"; // or any other sorting criteria you plan to support
+  sortField: "breed" | "name" | "age";
+  sortOrder: "asc" | "desc";
 }
 
 interface DogsState {
   breeds: string[];
   searchResults: DogSearchReturnType | null;
   dogDetails: DogProps[];
-  matchingDog: MatchProps | null; // Added property for the matched dog ID
+  matchingDog: MatchProps | null;
   isLoading: boolean;
   error: string | null;
-  queryParams: DogSearchParams | null; // Store all query parameters
-  sorting?: SortingOptions; // New property for sorting
+  queryParams: DogSearchParams | null;
+  sorting?: SortingOptions;
 }
 
 const initialState: DogsState = {
@@ -29,17 +29,14 @@ const initialState: DogsState = {
   isLoading: false,
   error: null,
   matchingDog: null,
-  queryParams: null, // Initialize to null or {}
-  sorting: {
-    sortField: "breed", // Default sorting field
-    sortOrder: "asc", // Default sorting order
-  },
+  queryParams: null,
 };
 
 interface OnSearchDogsSuccessActionType {
   searchResults: DogSearchReturnType;
   dogDetails: DogProps[];
   queryParams: DogSearchParams | null;
+  isNewSort?: boolean;
 }
 
 const dogsSlice = createSlice({
@@ -58,18 +55,31 @@ const dogsSlice = createSlice({
       state.error = action.payload;
     },
 
-    onSearchDogs: (state, _action: PayloadAction<DogSearchParams>) => {
+    onSearchDogs: (
+      state,
+      _action: PayloadAction<{
+        queryParams: DogSearchParams;
+        isNewSort?: boolean;
+      }>
+    ) => {
       state.isLoading = true;
     },
     onSearchDogsSuccess: (
       state,
       action: PayloadAction<OnSearchDogsSuccessActionType>
     ) => {
-      const { searchResults, dogDetails, queryParams } = action.payload;
+      const { searchResults, dogDetails, queryParams, isNewSort } =
+        action.payload;
 
       state.isLoading = false;
       state.searchResults = searchResults;
-      state.dogDetails = [...state.dogDetails, ...dogDetails];
+
+      if (isNewSort) {
+        state.dogDetails = dogDetails;
+      } else {
+        state.dogDetails = [...state.dogDetails, ...dogDetails];
+      }
+
       state.queryParams = queryParams;
     },
     onSearchDogsError: (state, action: PayloadAction<string>) => {
@@ -77,13 +87,13 @@ const dogsSlice = createSlice({
       state.error = action.payload;
     },
 
-    // New actions for matching dog
+    // FUTURE
     onMatchDog: (state, _action: PayloadAction<string[]>) => {
       state.isLoading = true;
     },
     onMatchDogSuccess: (state, action: PayloadAction<MatchProps>) => {
       state.isLoading = false;
-      state.matchingDog = action.payload; // Set the matched dog ID
+      state.matchingDog = action.payload;
     },
     onMatchDogError: (state, action: PayloadAction<string>) => {
       state.isLoading = false;
@@ -102,6 +112,7 @@ export const {
   onMatchDog,
   onMatchDogSuccess,
   onMatchDogError,
+  // onSetSorting,
 } = dogsSlice.actions;
 
 export default dogsSlice.reducer;

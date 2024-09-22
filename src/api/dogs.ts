@@ -60,7 +60,7 @@ const fetchDogsAPI = async (
   searchParams: DogSearchParams
 ): Promise<DogSearchReturnType> => {
   const DOGS_SEARCH_URL = `${BASE_URL}/dogs/search`;
-  console.log("API searchParams: ", searchParams);
+
   try {
     const queryParams = qs.stringify(searchParams, {
       arrayFormat: "comma",
@@ -72,7 +72,7 @@ const fetchDogsAPI = async (
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // Include the auth cookie
+      credentials: "include",
     });
 
     if (response.ok) {
@@ -95,13 +95,13 @@ const fetchDogDetailsAPI = async (dogIds: string[]): Promise<DogProps[]> => {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // Include the auth cookie
-      body: JSON.stringify(dogIds), // Send an array of dog IDs
+      credentials: "include",
+      body: JSON.stringify(dogIds),
     });
 
     if (response.ok) {
       const dogs = await response.json();
-      return dogs; // Expecting an array of dog objects
+      return dogs;
     } else {
       throw new Error("Failed to fetch dog details.");
     }
@@ -120,12 +120,12 @@ const fetchDogMatchAPI = async (dogIds: string[]): Promise<MatchProps> => {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify(dogIds), // Send an array of dog IDs
+      body: JSON.stringify(dogIds),
     });
 
     if (response.ok) {
       const match = await response.json();
-      return match; // Expecting an object with the matched dog ID
+      return match;
     } else {
       throw new Error("Failed to fetch dog match.");
     }
@@ -135,36 +135,3 @@ const fetchDogMatchAPI = async (dogIds: string[]): Promise<MatchProps> => {
 };
 
 export { fetchBreedsAPI, fetchDogsAPI, fetchDogDetailsAPI, fetchDogMatchAPI };
-
-// const fetchDogDetailsAPI = async (dogIds: string[]): Promise<DogProps[]> => {
-//   const DOGS_DETAILS_URL = `${BASE_URL}/dogs`;
-//   const chunkSize = 100;
-//   const results: DogProps[] = [];
-
-//   for (let i = 0; i < dogIds.length; i += chunkSize) {
-//     const chunk = dogIds.slice(i, i + chunkSize);
-
-//     try {
-//       const response = await fetch(DOGS_DETAILS_URL, {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         credentials: "include",
-//         body: JSON.stringify(chunk),
-//       });
-
-//       if (response.ok) {
-//         const dogs = await response.json();
-//         results.push(...dogs); // Combine the results
-//       } else {
-//         throw new Error("Failed to fetch dog details for chunk.");
-//       }
-//     } catch (error) {
-//       console.error("Error fetching dog details:", error);
-//       throw error; // Handle the error as needed
-//     }
-//   }
-
-//   return results;
-// };

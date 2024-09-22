@@ -49,41 +49,42 @@ function* handleSearchDogs(
   void,
   any
 > {
+  const { queryParams: qp, isNewSort } = action.payload;
+
   try {
-    const searchResults: DogSearchReturnType = yield call(
-      fetchDogsAPI,
-      action.payload
-    );
+    const searchResults: DogSearchReturnType = yield call(fetchDogsAPI, qp);
     const dogDetails: DogProps[] = yield call(
       fetchDogDetailsAPI,
       searchResults.resultIds
     );
 
-    const nextUrl = searchResults?.next || ""; // Use an empty string if next is null
-    const queryString = nextUrl.split("?")[1]; // Get the part after the ?
+    const nextUrl = searchResults?.next || "";
+    const queryString = nextUrl.split("?")[1];
 
-    let queryParams = {}; // Default to an empty object
-    if (queryString) {
+    let queryParams = {};
+    if (isNewSort) {
+      queryParams = { ...qp, size: "25", from: "25" }; // Use qs to parse the query string
+    } else if (queryString && !isNewSort) {
       queryParams = qs.parse(queryString); // Use qs to parse the query string
     }
-    // console.log("SAGAS searchResults", searchResults);
-    // console.log("SAGAS dogDetails", dogDetails);
 
-    yield put(onSearchDogsSuccess({ searchResults, dogDetails, queryParams }));
+    yield put(
+      onSearchDogsSuccess({ searchResults, dogDetails, queryParams, isNewSort })
+    );
   } catch (error: any) {
     yield put(onSearchDogsError(error?.message || "Error searching for dogs"));
   }
 }
 
 function* handleMatchDogs(
-  action: ReturnType<typeof onMatchDog> // Adjust according to your action type
+  action: ReturnType<typeof onMatchDog>
 ): Generator<CallEffect<MatchProps> | PutEffect<any>, void, any> {
   try {
     const match = yield call(fetchDogMatchAPI, action.payload);
-    // const
-    yield put(onMatchDogSuccess(match)); // Adjust your success action
+
+    yield put(onMatchDogSuccess(match));
   } catch (error: any) {
-    yield put(onMatchDogError(error?.message || "Error matching dogs")); // Adjust your error action
+    yield put(onMatchDogError(error?.message || "Error matching dogs"));
   }
 }
 
