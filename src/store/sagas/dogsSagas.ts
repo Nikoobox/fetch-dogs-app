@@ -15,9 +15,9 @@ import {
   onSearchDogs,
   onSearchDogsSuccess,
   onSearchDogsError,
-  onMatchDog,
-  onMatchDogSuccess,
-  onMatchDogError,
+  //   onMatchDog,
+  //   onMatchDogSuccess,
+  //   onMatchDogError,
 } from "../../features/dogs";
 import {
   fetchBreedsAPI,
@@ -63,9 +63,9 @@ function* handleSearchDogs(
 
     let queryParams = {};
     if (isNewSort) {
-      queryParams = { ...qp, size: "25", from: "25" }; // Use qs to parse the query string
+      queryParams = { ...qp, size: "25", from: "25" };
     } else if (queryString && !isNewSort) {
-      queryParams = qs.parse(queryString); // Use qs to parse the query string
+      queryParams = qs.parse(queryString);
     }
 
     yield put(
@@ -76,20 +76,20 @@ function* handleSearchDogs(
   }
 }
 
-function* handleMatchDogs(
-  action: ReturnType<typeof onMatchDog>
-): Generator<CallEffect<MatchProps> | PutEffect<any>, void, any> {
-  try {
-    const match = yield call(fetchDogMatchAPI, action.payload);
+// function* handleMatchDogs(
+//   action: ReturnType<typeof onMatchDog>
+// ): Generator<CallEffect<MatchProps> | PutEffect<any>, void, any> {
+//   try {
+//     const match = yield call(fetchDogMatchAPI, action.payload);
 
-    yield put(onMatchDogSuccess(match));
-  } catch (error: any) {
-    yield put(onMatchDogError(error?.message || "Error matching dogs"));
-  }
-}
+//     yield put(onMatchDogSuccess(match));
+//   } catch (error: any) {
+//     yield put(onMatchDogError(error?.message || "Error matching dogs"));
+//   }
+// }
 
 export function* dogsSaga() {
   yield takeEvery(onFetchBreeds, handleFetchBreeds);
   yield takeEvery(onSearchDogs, handleSearchDogs);
-  yield takeEvery(onMatchDog, handleMatchDogs);
+  //   yield takeEvery(onMatchDog, handleMatchDogs);
 }
