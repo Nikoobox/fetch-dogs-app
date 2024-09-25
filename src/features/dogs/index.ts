@@ -88,17 +88,17 @@ const dogsSlice = createSlice({
     },
 
     // FUTURE
-    onMatchDog: (state, _action: PayloadAction<string[]>) => {
-      state.isLoading = true;
-    },
-    onMatchDogSuccess: (state, action: PayloadAction<MatchProps>) => {
-      state.isLoading = false;
-      state.matchingDog = action.payload;
-    },
-    onMatchDogError: (state, action: PayloadAction<string>) => {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
+    // onMatchDog: (state, _action: PayloadAction<string[]>) => {
+    //   state.isLoading = true;
+    // },
+    // onMatchDogSuccess: (state, action: PayloadAction<MatchProps>) => {
+    //   state.isLoading = false;
+    //   state.matchingDog = action.payload;
+    // },
+    // onMatchDogError: (state, action: PayloadAction<string>) => {
+    //   state.isLoading = false;
+    //   state.error = action.payload;
+    // },
   },
 });
 
@@ -109,10 +109,9 @@ export const {
   onSearchDogs,
   onSearchDogsSuccess,
   onSearchDogsError,
-  onMatchDog,
-  onMatchDogSuccess,
-  onMatchDogError,
-  // onSetSorting,
+  // onMatchDog,
+  // onMatchDogSuccess,
+  // onMatchDogError,
 } = dogsSlice.actions;
 
 export default dogsSlice.reducer;

@@ -60,13 +60,13 @@ const fetchDogsAPI = async (
   searchParams: DogSearchParams
 ): Promise<DogSearchReturnType> => {
   const DOGS_SEARCH_URL = `${BASE_URL}/dogs/search`;
-
+  console.log("API searchParams", searchParams);
   try {
     const queryParams = qs.stringify(searchParams, {
-      arrayFormat: "comma",
+      arrayFormat: "brackets",
       skipNulls: true,
     });
-    console.log("queryParams", queryParams);
+    console.log("--->>> API fetchDogsAPI queryParams", queryParams);
     const response = await fetch(`${DOGS_SEARCH_URL}?${queryParams}`, {
       method: "GET",
       headers: {
