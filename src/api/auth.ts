@@ -1,4 +1,4 @@
-const BASE_URL = " https://frontend-take-home-service.fetch.com";
+const BASE_URL = "https://frontend-take-home-service.fetch.com";
 
 interface LoginFormData {
   userName: string;
