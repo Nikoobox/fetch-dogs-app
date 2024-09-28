@@ -8,19 +8,15 @@ import AppProviders from "./components/Providers";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { useAppSelector } from "./hooks";
-import "./App.css";
 
 const Login = lazy(() => import("./components/Login"));
 const SearchPage = lazy(() => import("./components/SearchPage"));
 
-const App = () => {
-  // needed to access redux store
-  return (
-    <AppProviders>
-      <AppContent />
-    </AppProviders>
-  );
-};
+const App = () => (
+  <AppProviders>
+    <AppContent />
+  </AppProviders>
+);
 
 const AppContent = () => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
