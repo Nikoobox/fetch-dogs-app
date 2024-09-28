@@ -1,50 +1,70 @@
-# React + TypeScript + Vite
+# Fetch Dogs App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+Welcome to the Fetch Dogs App! Here at Fetch, we love dogs and hope you do too! This application allows users to search through a database of shelter dogs to help find them a loving home. Users can log in, filter through dog breeds, and generate matches based on their favorite dogs.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technology Stack
 
-## Expanding the ESLint configuration
+- **React**: A JavaScript library for building user interfaces.
+- **TypeScript**: A superset of JavaScript that provides static typing.
+- **Redux**: A predictable state container for JavaScript apps.
+- **Redux Toolkit**: A library for efficient Redux development.
+- **Redux-Saga**: A middleware library for handling side effects in Redux.
+- **Material-UI (MUI)**: A popular React UI framework for implementing Google's Material Design.
+- **REST API**: For communication with the backend service.
+- **Vite**: A build tool that provides a fast development experience.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## App Functionality and Overview
 
-- Configure the top-level `parserOptions` property like this:
+The application allows users to:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+1. **Login**: Users enter their name and email on a login screen and authenticate via a REST API.
+2. **Search for Dogs**: After logging in, users can search for available dogs with the following features:
+   - Filter by breed, age, or zipcode.
+   - Paginate results.
+   - Sort results alphabetically by breed, with options for ascending or descending order, age or name.
+   - View all fields of the Dog object.
+   - Select favorite dogs from search results.
+3. **Generate Matches**: Users can generate a match based on their favorites by sending the IDs to the `/dogs/match` endpoint.
+4. **Logot**: Hit this endpoint to end a user’s session. This will invalidate the auth cookie.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## How to Run the Project Locally
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+1. Clone the repository:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+   ```
+   git clone
+   ```
+
+2. Navigate to the project directory:
+
+   ```
+   cd fetch-dogs-app
+   ```
+
+3. Install dependencies:
+
+   ```
+   npm install
+   ```
+
+   or
+
+   ```
+   yarn
+   ```
+
+4. Start the development server:
+
+   ```
+   npm run dev
+   ```
+
+   or
+
+   ```
+   yarn run dev
+   ```
+
+Happy fetching!
