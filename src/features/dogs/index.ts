@@ -104,6 +104,8 @@ const dogsSlice = createSlice({
     onClearMatchDog: (state) => {
       state.matchingDog = null;
     },
+
+    resetDogs: () => initialState,
   },
 });
 
@@ -120,6 +122,7 @@ export const {
   onMatchDogSuccess,
   onMatchDogError,
   onClearMatchDog,
+  resetDogs,
 } = dogsSlice.actions;
 
 export default dogsSlice.reducer;

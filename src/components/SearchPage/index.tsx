@@ -11,7 +11,6 @@ import {
   Container,
   Box,
   Paper,
-  Modal,
 } from "@mui/material";
 
 import { DogSearchParams, DogProps } from "../../api";
@@ -24,6 +23,7 @@ import {
   removeDogFromFavorites,
   onMatchDog,
   onClearMatchDog,
+  resetDogs,
 } from "../../features/dogs";
 import Table from "../Table";
 import ZipCodes from "../ZipCodes";
@@ -35,7 +35,6 @@ const SearchPage: FC = () => {
   const dogsState = useAppSelector((state) => state.dogs);
   const { dogDetails, isLoading, queryParams, favorites, matchingDog } =
     dogsState;
-  console.log("STATE dogsState", dogsState);
 
   const [_searchParams, setSearchParams] = useSearchParams();
 
@@ -89,16 +88,14 @@ const SearchPage: FC = () => {
       from: undefined,
       sort: "breed:asc",
     };
-    console.log("newSearchParams", newSearchParams);
+
     dispatch(onSearchDogs({ queryParams: newSearchParams, isNewSort: true }));
 
-    const updatedParams = {
-      // ...Object.fromEntries(searchParams), // Preserve existing params (keep for now)
-      ...newSearchParams,
-    };
-
     setSearchParams(
-      qs.stringify(updatedParams, { skipNulls: true, arrayFormat: "brackets" })
+      qs.stringify(newSearchParams, {
+        skipNulls: true,
+        arrayFormat: "brackets",
+      })
     );
   };
 
@@ -145,7 +142,9 @@ const SearchPage: FC = () => {
     dispatch(onClearMatchDog());
   };
 
-  console.log("matchingDog", matchingDog);
+  const handleReset = () => {
+    dispatch(resetDogs());
+  };
 
   return (
     <>
@@ -164,15 +163,22 @@ const SearchPage: FC = () => {
                       selectedBreeds={selectedBreeds}
                     />
                   </Box>
-
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSearch}
-                    disableElevation
-                  >
-                    Search
-                  </Button>
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <Button
+                      variant="contained"
+                      onClick={handleSearch}
+                      disableElevation
+                    >
+                      Search
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      onClick={handleReset}
+                      disableElevation
+                    >
+                      Reset
+                    </Button>
+                  </Box>
                 </Box>
 
                 <Grid container spacing={2}>

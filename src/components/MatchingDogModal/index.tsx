@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Modal, Paper, Typography, Box, IconButton } from "@mui/material";
+import { Modal, Paper, Typography, Box, IconButton, Link } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 
 import { DogProps } from "../../api";
@@ -67,6 +67,16 @@ const MatchingDogModal: FC<MatchingDogModalProps> = ({
           <Typography>Breed: {breed}</Typography>
           <Typography>Age: {age}</Typography>
           <Typography>Zip Code: {zip_code}</Typography>
+          <Typography variant="body2" sx={{ marginTop: 2 }}>
+            For more information about this dog, please contact{" "}
+            <Link
+              href="https://fetch.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Fetch Rewards
+            </Link>
+          </Typography>
         </Box>
       </Paper>
     </Modal>

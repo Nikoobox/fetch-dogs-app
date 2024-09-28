@@ -14,6 +14,7 @@ import {
   onLogoutUserSuccess,
   onLogoutUserError,
 } from "../../features/auth";
+import { resetDogs } from "../../features/dogs";
 import { authLoginAPI, ApiReturnType, authLogoutAPI } from "../../api";
 import { LoginFormData } from "../../components/Login";
 
@@ -47,6 +48,7 @@ function* logoutUser(): Generator<
     const success: boolean = yield call(authLogoutAPI);
     if (success) {
       yield put(onLogoutUserSuccess());
+      yield put(resetDogs());
     } else {
       yield put(onLogoutUserError("Logout failed."));
     }
