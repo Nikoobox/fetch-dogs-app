@@ -1,11 +1,12 @@
 import { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
 
 import { ProtectedRoute } from "./components/Auth";
 import AppProviders from "./components/Providers";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import { useAppSelector } from "./hooks";
 import "./App.css";
 
@@ -26,12 +27,16 @@ const AppContent = () => {
 
   return (
     <>
-      <Navbar />
       <Suspense
         fallback={
-          <CircularProgress style={{ display: "block", margin: "auto" }} />
+          <Box width="100%" height="100%" display="flex">
+            <CircularProgress
+              sx={{ display: "block", margin: "auto", color: "black" }}
+            />
+          </Box>
         }
       >
+        <Navbar />
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
@@ -45,25 +50,9 @@ const AppContent = () => {
             }
           />
         </Routes>
-      </Suspense>
 
-      {/* <Suspense
-        fallback={
-          <CircularProgress style={{ display: "block", margin: "auto" }} />
-        }
-      >
-        <Routes>
-          <Route path="/" element={<Navigate to="/search" />} />
-          <Route
-            path="/search"
-            element={
-              <ProtectedRoute isAuthenticated={true}>
-                <SearchPage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </Suspense> */}
+        <Footer />
+      </Suspense>
     </>
   );
 };

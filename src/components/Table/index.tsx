@@ -9,6 +9,7 @@ import {
   Paper,
   CircularProgress,
   Typography,
+  Box,
   IconButton,
 } from "@mui/material";
 import {
@@ -20,7 +21,7 @@ import {
 import { DogProps } from "../../api";
 
 interface DogTableProps {
-  dogData: DogProps[];
+  dogsData: DogProps[];
   isLoading: boolean;
   tableRef?: React.Ref<HTMLDivElement>;
   onSort: (field: "breed" | "name" | "age") => void;
@@ -30,7 +31,7 @@ interface DogTableProps {
 }
 
 const DogTable: FC<DogTableProps> = ({
-  dogData,
+  dogsData,
   isLoading,
   tableRef,
   onSort,
@@ -41,6 +42,8 @@ const DogTable: FC<DogTableProps> = ({
   const [sortField, sortDirection] = sortInfo
     ? sortInfo.split(":")
     : [null, null];
+
+  const hasFetchedDogsData = !!dogsData.length;
 
   const renderSortIcon = (field: string) => {
     if (sortField === field) {
@@ -53,9 +56,33 @@ const DogTable: FC<DogTableProps> = ({
     return null;
   };
 
-  const favoriteDogIds = useMemo(() => {
-    return favoriteDogs.map((fDog) => fDog.id);
-  }, [favoriteDogs]);
+  const favoriteDogIds = useMemo(
+    () => favoriteDogs.map((fDog) => fDog.id),
+    [favoriteDogs]
+  );
+
+  if (!hasFetchedDogsData && isLoading) {
+    return (
+      <Box
+        width="100%"
+        height="150px"
+        mx="auto"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <CircularProgress
+          sx={{
+            color: "black",
+          }}
+        />
+      </Box>
+    );
+  }
+
+  if (!hasFetchedDogsData) {
+    return null;
+  }
 
   return (
     <div style={{ position: "relative" }}>
@@ -67,9 +94,13 @@ const DogTable: FC<DogTableProps> = ({
             left: "50%",
             transform: "translate(-50%, -50%)",
             zIndex: 2,
+            color: "black",
           }}
         />
       )}
+      <Typography variant="h6" gutterBottom sx={{ marginBottom: 1 }}>
+        Dogs Results
+      </Typography>
       <TableContainer
         component={Paper}
         ref={tableRef}
@@ -137,7 +168,7 @@ const DogTable: FC<DogTableProps> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {dogData.map((dog) => {
+            {dogsData.map((dog) => {
               const { id, breed, name, age, zip_code, img } = dog;
               return (
                 <TableRow key={id}>

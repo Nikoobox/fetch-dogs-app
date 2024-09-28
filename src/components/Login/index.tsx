@@ -46,7 +46,15 @@ const Login: FC = () => {
   }, [isAuthenticated]);
 
   return (
-    <Container maxWidth="xs" sx={{ mt: 8 }}>
+    <Container
+      maxWidth="xs"
+      sx={{
+        flex: 1,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <Paper elevation={1} sx={{ padding: 4 }}>
         <Box display="flex" flexDirection="column" alignItems="center">
           <Typography variant="h4">User Login</Typography>

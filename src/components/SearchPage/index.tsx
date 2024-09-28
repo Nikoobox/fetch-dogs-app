@@ -11,6 +11,7 @@ import {
   Container,
   Box,
   Paper,
+  Modal,
 } from "@mui/material";
 
 import { DogSearchParams, DogProps } from "../../api";
@@ -22,15 +23,18 @@ import {
   addDogToFavorites,
   removeDogFromFavorites,
   onMatchDog,
+  onClearMatchDog,
 } from "../../features/dogs";
 import Table from "../Table";
 import ZipCodes from "../ZipCodes";
 import Favorites from "../Favorites";
+import MatchingDogModal from "../MatchingDogModal";
 
 const SearchPage: FC = () => {
   const dispatch = useAppDispatch();
   const dogsState = useAppSelector((state) => state.dogs);
-  const { dogDetails, isLoading, queryParams, favorites } = dogsState;
+  const { dogDetails, isLoading, queryParams, favorites, matchingDog } =
+    dogsState;
   console.log("STATE dogsState", dogsState);
 
   const [_searchParams, setSearchParams] = useSearchParams();
@@ -137,79 +141,86 @@ const SearchPage: FC = () => {
     dispatch(onMatchDog(favorites));
   };
 
-  const hasDogDetails = !!dogDetails.length;
-  const hasFavorites = !!favorites.length;
+  const handleCloseModal = () => {
+    dispatch(onClearMatchDog());
+  };
+
+  console.log("matchingDog", matchingDog);
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 10 }}>
-      <Grid container spacing={1}>
-        <Grid size={{ xs: 12 }}>
-          <Paper elevation={1} sx={{ padding: 2 }}>
-            <Typography variant="h5" sx={{ marginBottom: 2 }}>
-              Search for Dogs
-            </Typography>
-            <Box display="flex" flexDirection="column" gap={2}>
-              <Box display="flex" width="100%" alignItems="center" gap={2}>
-                <Box flex={1}>
-                  <BreedsAutocomplete
-                    setBreeds={setSelectedBreeds}
-                    selectedBreeds={selectedBreeds}
-                  />
+    <>
+      <Container maxWidth="lg" sx={{ mt: 4, flex: 1 }}>
+        <Grid container spacing={1}>
+          <Grid size={{ xs: 12 }}>
+            <Paper elevation={1} sx={{ padding: 2 }}>
+              <Typography variant="h5" sx={{ marginBottom: 2 }}>
+                Search for Dogs
+              </Typography>
+              <Box display="flex" flexDirection="column" gap={2}>
+                <Box display="flex" width="100%" alignItems="center" gap={2}>
+                  <Box flex={1}>
+                    <BreedsAutocomplete
+                      setBreeds={setSelectedBreeds}
+                      selectedBreeds={selectedBreeds}
+                    />
+                  </Box>
+
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSearch}
+                    disableElevation
+                  >
+                    Search
+                  </Button>
                 </Box>
 
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSearch}
-                  disableElevation
-                >
-                  Search
-                </Button>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 2 }}>
+                    <TextField
+                      label="Minimum Age"
+                      type="number"
+                      value={ageMin}
+                      onChange={(e) =>
+                        setAgeMin(
+                          Number(e.target.value) < 0 ? 0 : e.target.value
+                        )
+                      }
+                      variant="outlined"
+                      fullWidth
+                      inputProps={{ min: 0 }}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 2 }}>
+                    <TextField
+                      label="Maximum Age"
+                      type="number"
+                      value={ageMax}
+                      onChange={(e) =>
+                        setAgeMax(
+                          Number(e.target.value) < 0 ? 0 : e.target.value
+                        )
+                      }
+                      variant="outlined"
+                      fullWidth
+                      inputProps={{ min: 0 }}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 8 }}>
+                    <ZipCodes
+                      zipCode={zipCode}
+                      setZipCode={setZipCode}
+                      zipCodes={zipCodes}
+                      setZipCodes={setZipCodes}
+                    />
+                  </Grid>
+                </Grid>
               </Box>
+            </Paper>
+          </Grid>
 
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 2 }}>
-                  <TextField
-                    label="Minimum Age"
-                    type="number"
-                    value={ageMin}
-                    onChange={(e) =>
-                      setAgeMin(Number(e.target.value) < 0 ? 0 : e.target.value)
-                    }
-                    variant="outlined"
-                    fullWidth
-                    inputProps={{ min: 0 }}
-                    size="small"
-                  />
-                </Grid>
-                <Grid size={{ xs: 2 }}>
-                  <TextField
-                    label="Maximum Age"
-                    type="number"
-                    value={ageMax}
-                    onChange={(e) =>
-                      setAgeMax(Number(e.target.value) < 0 ? 0 : e.target.value)
-                    }
-                    variant="outlined"
-                    fullWidth
-                    inputProps={{ min: 0 }}
-                    size="small"
-                  />
-                </Grid>
-                <Grid size={{ xs: 8 }}>
-                  <ZipCodes
-                    zipCode={zipCode}
-                    setZipCode={setZipCode}
-                    zipCodes={zipCodes}
-                    setZipCodes={setZipCodes}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-          </Paper>
-        </Grid>
-
-        {hasFavorites && (
           <Grid size={{ xs: 12 }} sx={{ marginTop: 2, marginBottom: 1 }}>
             <Favorites
               favorites={favorites}
@@ -217,12 +228,10 @@ const SearchPage: FC = () => {
               onGenerateMatch={generateMatch}
             />
           </Grid>
-        )}
 
-        <Grid size={{ xs: 12 }} sx={{ marginTop: "16px" }}>
-          {hasDogDetails ? (
+          <Grid size={{ xs: 12 }} sx={{ marginTop: "16px" }}>
             <Table
-              dogData={dogDetails}
+              dogsData={dogDetails}
               isLoading={isLoading}
               tableRef={tableRef}
               onSort={handleSort}
@@ -230,12 +239,12 @@ const SearchPage: FC = () => {
               addToFavorites={handleAddDogToFavorites}
               favoriteDogs={favorites}
             />
-          ) : (
-            <Typography>No results found.</Typography>
-          )}
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+
+      <MatchingDogModal matchingDog={matchingDog} onClose={handleCloseModal} />
+    </>
   );
 };
 
