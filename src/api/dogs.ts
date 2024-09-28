@@ -47,7 +47,9 @@ const fetchBreedsAPI = async (): Promise<string[]> => {
     } else {
       throw new Error("Failed to fetch dog breeds.");
     }
-  } catch (_error) {
+  } catch (error) {
+    console.error("Error fetching dog breeds:", error);
+
     throw new Error("Failed to fetch dog breeds.");
   }
 };
