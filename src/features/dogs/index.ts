@@ -101,6 +101,9 @@ const dogsSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    onClearMatchDog: (state) => {
+      state.matchingDog = null;
+    },
   },
 });
 
@@ -116,6 +119,7 @@ export const {
   onMatchDog,
   onMatchDogSuccess,
   onMatchDogError,
+  onClearMatchDog,
 } = dogsSlice.actions;
 
 export default dogsSlice.reducer;

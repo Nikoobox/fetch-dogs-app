@@ -1,9 +1,11 @@
-// import React from "react";
-import { AppBar, Toolbar, Typography, Button, Container } from "@mui/material";
 import { useAppSelector, useAppDispatch } from "../../hooks"; // Adjust the path as necessary
 import { onLogoutUser } from "../../features/auth"; // Adjust the path as necessary
 
+import { AppBar, Toolbar, Typography, Button, Container } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+
 const Navbar = () => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const { userName } = useAppSelector((state) => state.auth);
 
@@ -12,10 +14,14 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static" elevation={0}>
+    <AppBar
+      position="static"
+      elevation={0}
+      sx={{ backgroundColor: theme.palette.custom.lightBlue }}
+    >
       <Container maxWidth="lg">
         <Toolbar disableGutters>
-          <Typography variant="h6" style={{ flexGrow: 1 }}>
+          <Typography variant="h6" color="common.white" style={{ flexGrow: 1 }}>
             Fetch a 🐶
           </Typography>
           {userName && (
