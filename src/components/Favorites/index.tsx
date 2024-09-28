@@ -48,12 +48,32 @@ const Favorites: FC<FavoritesProps> = ({
         {favorites.map(({ id, name, breed, age }) => (
           <Paper
             elevation={1}
-            sx={{ padding: 1.5, position: "relative", minWidth: "100px" }}
+            sx={{ padding: 1.5, position: "relative", width: "150px" }}
           >
             <Box display="flex" alignItems="center">
               <Box>
-                <Typography sx={{ fontWeight: 600 }}>{name}</Typography>
-                <Typography variant="subtitle2">{breed}</Typography>
+                <Typography
+                  sx={{
+                    fontWeight: 600,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "130px",
+                  }}
+                >
+                  {name}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "130px",
+                  }}
+                >
+                  {breed}
+                </Typography>
                 <Typography variant="subtitle2">Age: {age}</Typography>
               </Box>
             </Box>
