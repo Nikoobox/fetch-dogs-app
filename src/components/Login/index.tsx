@@ -1,7 +1,14 @@
 import { useEffect, useState, FC, FormEvent, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  Paper,
+} from "@mui/material";
 
 import { onAutenticateUser } from "../../features/auth";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -39,57 +46,51 @@ const Login: FC = () => {
   }, [isAuthenticated]);
 
   return (
-    <Container maxWidth="xs">
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          mt: 8,
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          User Login
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Name"
-            name="userName"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={formData.userName}
-            onChange={handleChange}
-            required
-          />
-          <TextField
-            label="Email"
-            name="userEmail"
-            type="email"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={formData.userEmail}
-            onChange={handleChange}
-            required
-          />
-          {error && (
-            <Typography variant="body2" color="error" sx={{ mt: 2 }}>
-              {error}
-            </Typography>
-          )}
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            sx={{ mt: 3, mb: 2 }}
-            disableElevation
-          >
-            Login
-          </Button>
-        </form>
-      </Box>
+    <Container maxWidth="xs" sx={{ mt: 8 }}>
+      <Paper elevation={1} sx={{ padding: 4 }}>
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Typography variant="h4">User Login</Typography>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Name"
+              name="userName"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={formData.userName}
+              onChange={handleChange}
+              required
+            />
+            <TextField
+              label="Email"
+              name="userEmail"
+              type="email"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={formData.userEmail}
+              onChange={handleChange}
+              required
+            />
+            {error && (
+              <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+                {error}
+              </Typography>
+            )}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+              disableElevation
+              size="large"
+            >
+              Login
+            </Button>
+          </form>
+        </Box>
+      </Paper>
     </Container>
   );
 };

@@ -11,10 +11,6 @@ export interface DogProps {
   breed: string;
 }
 
-export interface MatchProps {
-  match: string;
-}
-
 export interface DogSearchParams {
   breeds?: string[];
   zipCodes?: string[];
@@ -42,7 +38,7 @@ const fetchBreedsAPI = async (): Promise<string[]> => {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // Include the auth cookie
+      credentials: "include",
     });
 
     if (response.ok) {
@@ -60,13 +56,13 @@ const fetchDogsAPI = async (
   searchParams: DogSearchParams
 ): Promise<DogSearchReturnType> => {
   const DOGS_SEARCH_URL = `${BASE_URL}/dogs/search`;
-  console.log("API searchParams", searchParams);
+
   try {
     const queryParams = qs.stringify(searchParams, {
       arrayFormat: "brackets",
       skipNulls: true,
     });
-    console.log("--->>> API fetchDogsAPI queryParams", queryParams);
+
     const response = await fetch(`${DOGS_SEARCH_URL}?${queryParams}`, {
       method: "GET",
       headers: {
@@ -110,7 +106,7 @@ const fetchDogDetailsAPI = async (dogIds: string[]): Promise<DogProps[]> => {
   }
 };
 
-const fetchDogMatchAPI = async (dogIds: string[]): Promise<MatchProps> => {
+const fetchDogMatchAPI = async (dogIds: string[]): Promise<DogProps> => {
   const DOGS_MATCH_URL = `${BASE_URL}/dogs/match`;
 
   try {

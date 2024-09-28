@@ -15,9 +15,9 @@ import {
   onSearchDogs,
   onSearchDogsSuccess,
   onSearchDogsError,
-  //   onMatchDog,
-  //   onMatchDogSuccess,
-  //   onMatchDogError,
+  onMatchDog,
+  onMatchDogSuccess,
+  onMatchDogError,
 } from "../../features/dogs";
 import {
   fetchBreedsAPI,
@@ -26,7 +26,6 @@ import {
   fetchDogMatchAPI,
   DogSearchReturnType,
   DogProps,
-  MatchProps,
 } from "../../api";
 
 function* handleFetchBreeds(): Generator<
@@ -52,11 +51,8 @@ function* handleSearchDogs(
   const { queryParams: qp, isNewSort } = action.payload;
 
   try {
-    const searchResults: DogSearchReturnType = yield call(fetchDogsAPI, qp);
-    const dogDetails: DogProps[] = yield call(
-      fetchDogDetailsAPI,
-      searchResults.resultIds
-    );
+    const searchResults = yield call(fetchDogsAPI, qp);
+    const dogDetails = yield call(fetchDogDetailsAPI, searchResults.resultIds);
 
     const nextUrl = searchResults?.next || "";
     const queryString = nextUrl.split("?")[1];
@@ -76,20 +72,25 @@ function* handleSearchDogs(
   }
 }
 
-// function* handleMatchDogs(
-//   action: ReturnType<typeof onMatchDog>
-// ): Generator<CallEffect<MatchProps> | PutEffect<any>, void, any> {
-//   try {
-//     const match = yield call(fetchDogMatchAPI, action.payload);
+function* matchDogs(
+  action: ReturnType<typeof onMatchDog>
+): Generator<CallEffect<DogProps | DogProps[]> | PutEffect<any>, void, any> {
+  const ids = action.payload.map((dog) => dog.id);
+  try {
+    const response = yield call(fetchDogMatchAPI, ids);
+    const normalizedPayload = [response.match];
 
-//     yield put(onMatchDogSuccess(match));
-//   } catch (error: any) {
-//     yield put(onMatchDogError(error?.message || "Error matching dogs"));
-//   }
-// }
+    const machedDogDetails = yield call(fetchDogDetailsAPI, normalizedPayload);
+    const machedDog = machedDogDetails[0];
+
+    yield put(onMatchDogSuccess(machedDog));
+  } catch (error: any) {
+    yield put(onMatchDogError(error?.message || "Error matching the dog"));
+  }
+}
 
 export function* dogsSaga() {
   yield takeEvery(onFetchBreeds, handleFetchBreeds);
   yield takeEvery(onSearchDogs, handleSearchDogs);
-  //   yield takeEvery(onMatchDog, handleMatchDogs);
+  yield takeEvery(onMatchDog, matchDogs);
 }

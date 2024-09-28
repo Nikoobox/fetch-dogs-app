@@ -1,25 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  DogSearchReturnType,
-  DogSearchParams,
-  DogProps,
-  MatchProps,
-} from "../../api";
-
-interface SortingOptions {
-  sortField: "breed" | "name" | "age";
-  sortOrder: "asc" | "desc";
-}
+import { DogSearchReturnType, DogSearchParams, DogProps } from "../../api";
 
 interface DogsState {
   breeds: string[];
   searchResults: DogSearchReturnType | null;
   dogDetails: DogProps[];
-  matchingDog: MatchProps | null;
+  matchingDog: DogProps | null;
   isLoading: boolean;
   error: string | null;
   queryParams: DogSearchParams | null;
-  sorting?: SortingOptions;
+  favorites: DogProps[];
 }
 
 const initialState: DogsState = {
@@ -30,6 +20,7 @@ const initialState: DogsState = {
   error: null,
   matchingDog: null,
   queryParams: null,
+  favorites: [],
 };
 
 interface OnSearchDogsSuccessActionType {
@@ -63,6 +54,7 @@ const dogsSlice = createSlice({
       }>
     ) => {
       state.isLoading = true;
+      state.matchingDog = null;
     },
     onSearchDogsSuccess: (
       state,
@@ -87,18 +79,28 @@ const dogsSlice = createSlice({
       state.error = action.payload;
     },
 
-    // FUTURE
-    // onMatchDog: (state, _action: PayloadAction<string[]>) => {
-    //   state.isLoading = true;
-    // },
-    // onMatchDogSuccess: (state, action: PayloadAction<MatchProps>) => {
-    //   state.isLoading = false;
-    //   state.matchingDog = action.payload;
-    // },
-    // onMatchDogError: (state, action: PayloadAction<string>) => {
-    //   state.isLoading = false;
-    //   state.error = action.payload;
-    // },
+    addDogToFavorites: (state, action: PayloadAction<DogProps>) => {
+      const dogToAdd = action.payload;
+      state.favorites.push(dogToAdd);
+    },
+    removeDogFromFavorites: (state, action: PayloadAction<string>) => {
+      const dogIdToRemove = action.payload;
+      state.favorites = state.favorites.filter(
+        (dog) => dog.id !== dogIdToRemove
+      );
+    },
+
+    onMatchDog: (state, _action: PayloadAction<DogProps[]>) => {
+      state.isLoading = true;
+    },
+    onMatchDogSuccess: (state, action: PayloadAction<DogProps>) => {
+      state.isLoading = false;
+      state.matchingDog = action.payload;
+    },
+    onMatchDogError: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -109,9 +111,11 @@ export const {
   onSearchDogs,
   onSearchDogsSuccess,
   onSearchDogsError,
-  // onMatchDog,
-  // onMatchDogSuccess,
-  // onMatchDogError,
+  addDogToFavorites,
+  removeDogFromFavorites,
+  onMatchDog,
+  onMatchDogSuccess,
+  onMatchDogError,
 } = dogsSlice.actions;
 
 export default dogsSlice.reducer;
