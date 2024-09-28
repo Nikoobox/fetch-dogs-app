@@ -144,6 +144,12 @@ const SearchPage: FC = () => {
 
   const handleReset = () => {
     dispatch(resetDogs());
+
+    setSelectedBreeds([]);
+    setZipCode("");
+    setZipCodes([]);
+    setAgeMin("");
+    setAgeMax("");
   };
 
   return (
