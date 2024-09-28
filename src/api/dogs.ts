@@ -1,6 +1,6 @@
 import qs from "qs";
 
-const BASE_URL = " https://frontend-take-home-service.fetch.com";
+const BASE_URL = "https://frontend-take-home-service.fetch.com";
 
 export interface DogProps {
   id: string;
