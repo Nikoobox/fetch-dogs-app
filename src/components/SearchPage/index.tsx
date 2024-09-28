@@ -13,17 +13,24 @@ import {
   Paper,
 } from "@mui/material";
 
-import { DogSearchParams } from "../../api";
+import { DogSearchParams, DogProps } from "../../api";
 import BreedsAutocomplete from "../BreedsAutocomplete";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { onFetchBreeds, onSearchDogs } from "../../features/dogs";
+import {
+  onFetchBreeds,
+  onSearchDogs,
+  addDogToFavorites,
+  removeDogFromFavorites,
+  onMatchDog,
+} from "../../features/dogs";
 import Table from "../Table";
 import ZipCodes from "../ZipCodes";
+import Favorites from "../Favorites";
 
 const SearchPage: FC = () => {
   const dispatch = useAppDispatch();
   const dogsState = useAppSelector((state) => state.dogs);
-  const { dogDetails, isLoading, queryParams } = dogsState;
+  const { dogDetails, isLoading, queryParams, favorites } = dogsState;
   console.log("STATE dogsState", dogsState);
 
   const [_searchParams, setSearchParams] = useSearchParams();
@@ -114,26 +121,51 @@ const SearchPage: FC = () => {
     setSearchParams(
       qs.stringify(newQueryParams, { skipNulls: true, arrayFormat: "brackets" })
     );
-    console.log("### handleSort newQueryParams", newQueryParams);
 
     dispatch(onSearchDogs({ queryParams: newQueryParams, isNewSort: true }));
   };
 
+  const handleAddDogToFavorites = (dog: DogProps) => {
+    dispatch(addDogToFavorites(dog));
+  };
+
+  const handleRemoveDogFromFavorites = (dogId: string) => {
+    dispatch(removeDogFromFavorites(dogId));
+  };
+
+  const generateMatch = async () => {
+    dispatch(onMatchDog(favorites));
+  };
+
   const hasDogDetails = !!dogDetails.length;
+  const hasFavorites = !!favorites.length;
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 10 }}>
       <Grid container spacing={1}>
         <Grid size={{ xs: 12 }}>
           <Paper elevation={1} sx={{ padding: 2 }}>
-            <Typography variant="h6" sx={{ marginBottom: 1 }}>
+            <Typography variant="h5" sx={{ marginBottom: 2 }}>
               Search for Dogs
             </Typography>
             <Box display="flex" flexDirection="column" gap={2}>
-              <BreedsAutocomplete
-                setBreeds={setSelectedBreeds}
-                selectedBreeds={selectedBreeds}
-              />
+              <Box display="flex" width="100%" alignItems="center" gap={2}>
+                <Box flex={1}>
+                  <BreedsAutocomplete
+                    setBreeds={setSelectedBreeds}
+                    selectedBreeds={selectedBreeds}
+                  />
+                </Box>
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSearch}
+                  disableElevation
+                >
+                  Search
+                </Button>
+              </Box>
 
               <Grid container spacing={2}>
                 <Grid size={{ xs: 2 }}>
@@ -173,19 +205,20 @@ const SearchPage: FC = () => {
                   />
                 </Grid>
               </Grid>
-              <Box>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSearch}
-                  disableElevation
-                >
-                  Search
-                </Button>
-              </Box>
             </Box>
           </Paper>
         </Grid>
+
+        {hasFavorites && (
+          <Grid size={{ xs: 12 }} sx={{ marginTop: 2, marginBottom: 1 }}>
+            <Favorites
+              favorites={favorites}
+              onRemoveFromFavorites={handleRemoveDogFromFavorites}
+              onGenerateMatch={generateMatch}
+            />
+          </Grid>
+        )}
+
         <Grid size={{ xs: 12 }} sx={{ marginTop: "16px" }}>
           {hasDogDetails ? (
             <Table
@@ -194,6 +227,8 @@ const SearchPage: FC = () => {
               tableRef={tableRef}
               onSort={handleSort}
               sortInfo={queryParams?.sort}
+              addToFavorites={handleAddDogToFavorites}
+              favoriteDogs={favorites}
             />
           ) : (
             <Typography>No results found.</Typography>

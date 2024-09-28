@@ -7,7 +7,6 @@ import {
   DogSearchReturnType,
   DogSearchParams,
   DogProps,
-  MatchProps,
 } from "./dogs";
 
 export {
@@ -19,10 +18,4 @@ export {
   fetchDogMatchAPI,
 };
 
-export type {
-  DogSearchReturnType,
-  ApiReturnType,
-  DogSearchParams,
-  DogProps,
-  MatchProps,
-};
+export type { DogSearchReturnType, ApiReturnType, DogSearchParams, DogProps };

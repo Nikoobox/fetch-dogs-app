@@ -32,13 +32,14 @@ const BreedsAutocomplete = ({
     _event: SyntheticEvent<Element, Event>,
     value: string[]
   ) => {
-    setBreeds(value); // Set the selected breeds from the Autocomplete
+    setBreeds(value);
   };
 
   return (
     <Autocomplete
       multiple
       options={breeds}
+      limitTags={5}
       getOptionLabel={(option) => option}
       loading={loading}
       value={selectedBreeds}

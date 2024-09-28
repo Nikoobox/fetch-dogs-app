@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -9,9 +9,13 @@ import {
   Paper,
   CircularProgress,
   Typography,
+  IconButton,
 } from "@mui/material";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import {
+  ArrowUpward as ArrowUpwardIcon,
+  ArrowDownward as ArrowDownwardIcon,
+  Add as AddIcon,
+} from "@mui/icons-material";
 
 import { DogProps } from "../../api";
 
@@ -21,6 +25,8 @@ interface DogTableProps {
   tableRef?: React.Ref<HTMLDivElement>;
   onSort: (field: "breed" | "name" | "age") => void;
   sortInfo: string | undefined;
+  addToFavorites: (dog: DogProps) => void;
+  favoriteDogs: DogProps[];
 }
 
 const DogTable: FC<DogTableProps> = ({
@@ -29,6 +35,8 @@ const DogTable: FC<DogTableProps> = ({
   tableRef,
   onSort,
   sortInfo,
+  addToFavorites,
+  favoriteDogs,
 }) => {
   const [sortField, sortDirection] = sortInfo
     ? sortInfo.split(":")
@@ -44,6 +52,10 @@ const DogTable: FC<DogTableProps> = ({
     }
     return null;
   };
+
+  const favoriteDogIds = useMemo(() => {
+    return favoriteDogs.map((fDog) => fDog.id);
+  }, [favoriteDogs]);
 
   return (
     <div style={{ position: "relative" }}>
@@ -62,8 +74,9 @@ const DogTable: FC<DogTableProps> = ({
         component={Paper}
         ref={tableRef}
         sx={{
-          maxHeight: "350px",
+          maxHeight: "400px",
           overflowY: "auto",
+          marginBottom: 10,
         }}
       >
         <Table stickyHeader>
@@ -114,29 +127,53 @@ const DogTable: FC<DogTableProps> = ({
                   Image
                 </Typography>
               </TableCell>
+              <TableCell>
+                <Typography
+                  sx={{ display: "flex", gap: 0.5, fontWeight: "bold" }}
+                >
+                  Add to Favorites
+                </Typography>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {dogData.map(({ id, breed, name, age, zip_code, img }) => (
-              <TableRow key={id}>
-                <TableCell>{breed}</TableCell>
-                <TableCell>{name}</TableCell>
-                <TableCell>{age}</TableCell>
-                <TableCell>{zip_code}</TableCell>
-                <TableCell>
-                  <img
-                    src={img}
-                    alt="Dog"
-                    style={{
-                      borderRadius: "50%",
-                      width: "48px",
-                      height: "48px",
-                      objectFit: "cover",
-                    }}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
+            {dogData.map((dog) => {
+              const { id, breed, name, age, zip_code, img } = dog;
+              return (
+                <TableRow key={id}>
+                  <TableCell>{breed}</TableCell>
+                  <TableCell>{name}</TableCell>
+                  <TableCell>{age}</TableCell>
+                  <TableCell>{zip_code}</TableCell>
+                  <TableCell>
+                    <img
+                      src={img}
+                      alt="Dog"
+                      style={{
+                        borderRadius: "50%",
+                        width: "48px",
+                        height: "48px",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={() => addToFavorites(dog)}
+                      disabled={
+                        favoriteDogIds.includes(id) ||
+                        favoriteDogIds.length >= 5
+                      }
+                      color={
+                        favoriteDogIds.includes(id) ? "default" : "primary"
+                      }
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
