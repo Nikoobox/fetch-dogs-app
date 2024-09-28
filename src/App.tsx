@@ -20,7 +20,7 @@ const App = () => (
 
 const AppContent = () => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
-
+  console.log("AppContent-isAuthenticated", isAuthenticated);
   return (
     <>
       <Suspense
