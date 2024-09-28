@@ -6,7 +6,7 @@ Check out the live application at [Fetch a Dog](https://fetch-a-dog-ns.netlify.a
 
 ## Overview
 
-Welcome to the Fetch Dogs App! Here at Fetch, we love dogs and hope you do too! This application allows users to search through a database of shelter dogs to help find them a loving home. Users can log in, filter through dog breeds, and generate matches based on their favorite dogs.
+Welcome to the Fetch Dogs App! This application is dedicated to dog lovers and allows users to explore a database of shelter dogs, helping them find loving homes. Users can log in, filter through various dog breeds, and create matches based on their favorite dogs.
 
 ## Technology Stack
 
