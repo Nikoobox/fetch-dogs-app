@@ -1,5 +1,18 @@
 # Fetch Dogs App
 
+## Troubleshooting Authentication Issues
+
+If you encounter a **401 Authentication error** after signing in, it may be due to your browser not allowing the use of third-party cookies. To resolve this issue:
+
+### For Chrome Users:
+
+1. Open Chrome settings.
+2. Navigate to **Privacy and security**.
+3. Click on **Cookies and other site data**.
+4. Ensure that **Allow all cookies** or **Block third-party cookies in Incognito** is selected.
+
+After adjusting these settings, try logging in again.
+
 ## Visit the Site
 
 Check out the live application at [Fetch a Dog](https://fetch-a-dog-ns.netlify.app/).
