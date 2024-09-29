@@ -27,8 +27,16 @@ const Footer = () => {
             href="https://nikolayshatalov.com/"
             target="_blank"
             rel="noopener"
+            sx={{ marginRight: 4 }}
           >
             Portfolio
+          </Link>
+          <Link
+            href="https://github.com/Nikoobox/fetch-dogs-app"
+            target="_blank"
+            rel="noopener"
+          >
+            Github Repo
           </Link>
         </Typography>
 
