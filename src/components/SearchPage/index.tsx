@@ -162,14 +162,23 @@ const SearchPage: FC = () => {
                 Search for Dogs
               </Typography>
               <Box display="flex" flexDirection="column" gap={2}>
-                <Box display="flex" width="100%" alignItems="center" gap={2}>
+                <Box width="100%" alignItems="center" display="flex" gap={2}>
                   <Box flex={1}>
                     <BreedsAutocomplete
                       setBreeds={setSelectedBreeds}
                       selectedBreeds={selectedBreeds}
                     />
                   </Box>
-                  <Box display="flex" alignItems="center" gap={1}>
+                  <Box
+                    alignItems="center"
+                    gap={1}
+                    sx={{
+                      display: {
+                        xs: "none",
+                        sm: "flex",
+                      },
+                    }}
+                  >
                     <Button
                       variant="contained"
                       onClick={handleSearch}
@@ -229,6 +238,33 @@ const SearchPage: FC = () => {
                     />
                   </Grid>
                 </Grid>
+              </Box>
+              {/* web-mob */}
+              <Box
+                display="flex"
+                alignItems="center"
+                gap={1}
+                sx={{
+                  display: {
+                    xs: "flex",
+                    sm: "none",
+                  },
+                }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={handleSearch}
+                  disableElevation
+                >
+                  Search
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={handleReset}
+                  disableElevation
+                >
+                  Reset
+                </Button>
               </Box>
             </Paper>
           </Grid>
