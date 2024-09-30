@@ -188,7 +188,7 @@ const SearchPage: FC = () => {
                 </Box>
 
                 <Grid container spacing={2}>
-                  <Grid size={{ xs: 2 }}>
+                  <Grid size={{ xs: 12, sm: 2 }}>
                     <TextField
                       label="Minimum Age"
                       type="number"
@@ -204,7 +204,7 @@ const SearchPage: FC = () => {
                       size="small"
                     />
                   </Grid>
-                  <Grid size={{ xs: 2 }}>
+                  <Grid size={{ xs: 12, sm: 2 }}>
                     <TextField
                       label="Maximum Age"
                       type="number"
@@ -220,7 +220,7 @@ const SearchPage: FC = () => {
                       size="small"
                     />
                   </Grid>
-                  <Grid size={{ xs: 8 }}>
+                  <Grid size={{ xs: 12, sm: 8 }}>
                     <ZipCodes
                       zipCode={zipCode}
                       setZipCode={setZipCode}
