@@ -11,7 +11,12 @@ const Footer = () => {
     >
       <Container
         maxWidth="lg"
-        sx={{ display: "flex", justifyContent: "space-between" }}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          flexDirection: { xs: "column", sm: "row" }, // Responsive flex direction
+          alignItems: { xs: "center", sm: "flex-start" },
+        }}
       >
         <Typography variant="body2">
           <Link
@@ -40,7 +45,9 @@ const Footer = () => {
           </Link>
         </Typography>
 
-        <Typography variant="body2">Built by Nikolay Shatalov</Typography>
+        <Typography variant="body2" sx={{ marginTop: { xs: "8px" } }}>
+          Built by Nikolay Shatalov
+        </Typography>
       </Container>
     </Box>
   );

@@ -29,8 +29,13 @@ const ZipCodes: FC<ZipCodesProps> = ({
   };
 
   return (
-    <Box display="flex" alignItems="center" gap={2} width="100%">
-      <Box width="30%" display="flex">
+    <Box
+      display="flex"
+      alignItems="center"
+      gap={2}
+      flexDirection={{ xs: "column", sm: "row" }}
+    >
+      <Box sx={{ width: { xs: "100%", sm: "35%" } }} display="flex">
         <TextField
           label="Zip Code"
           value={zipCode}
@@ -50,7 +55,12 @@ const ZipCodes: FC<ZipCodesProps> = ({
         </IconButton>
       </Box>
 
-      <Box display="flex" flexWrap="wrap" gap={1} width="65%">
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={1}
+        sx={{ width: { xs: "100%", sm: "65%" } }}
+      >
         {zipCodes?.map((zCode, index) => (
           <Box
             key={index}
