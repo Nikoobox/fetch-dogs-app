@@ -28,7 +28,9 @@ Welcome to the Fetch Dogs App! This application is dedicated to dog lovers and a
 - **Redux**: A predictable state container for JavaScript apps.
 - **Redux Toolkit**: A library for efficient Redux development.
 - **Redux-Saga**: A middleware library for handling side effects in Redux.
-- **Material-UI (MUI)**: A popular React UI framework for implementing Google's Material Design.
+- **Material-UI (MUI)**: A popular React UI framework for implementing Google's Material Design, offering a wide range of pre-designed components to speed up development. MUI's grid system is leveraged to ensure the app remains responsive across different screen sizes, from mobile to desktop. Custom theming was used to provide consistency and reduce code duplication across the app.
+- **Responsive Design**:
+  The app layout adapts seamlessly to all device types, providing a user-friendly experience whether on mobile, tablet, or desktop.
 - **REST API**: For communication with the backend service.
 - **Vite**: A build tool that provides a fast development experience.
 
