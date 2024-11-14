@@ -11,13 +11,16 @@ interface AuthSliceState {
   error: string | null;
 }
 
-const initialState: AuthSliceState = {
-  userName: "",
-  userEmail: "",
-  isLoading: false,
-  isAuthenticated: false,
-  error: null,
-};
+const storedAuth = localStorage.getItem("auth"); // checking if auth exists
+const initialState: AuthSliceState = storedAuth
+  ? JSON.parse(storedAuth)
+  : {
+      userName: "",
+      userEmail: "",
+      isLoading: false,
+      isAuthenticated: false,
+      error: null,
+    };
 
 export const authSlice = createSlice({
   name: "auth",
@@ -31,6 +34,17 @@ export const authSlice = createSlice({
       state.error = null;
     },
     onAutenticateUserSuccess: (state, action: PayloadAction<LoginFormData>) => {
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({
+          userName: action.payload.userName,
+          userEmail: action.payload.userEmail,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        })
+      );
+
       state.userName = action.payload.userName;
       state.userEmail = action.payload.userEmail;
       state.isAuthenticated = true;
@@ -47,6 +61,8 @@ export const authSlice = createSlice({
       state.error = null;
     },
     onLogoutUserSuccess: (state) => {
+      localStorage.removeItem("auth"); // remove auth from localStorage
+
       state.userName = "";
       state.userEmail = "";
       state.isLoading = false;

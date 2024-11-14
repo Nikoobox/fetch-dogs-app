@@ -29,12 +29,13 @@ import {
 } from "../../api";
 
 function* handleFetchBreeds(): Generator<
+  // generator function
   CallEffect<string[]> | PutEffect<any>,
   void,
   any
 > {
   try {
-    const breeds = yield call(fetchBreedsAPI);
+    const breeds = yield call(fetchBreedsAPI); // yield pause the function until the value is returned
     yield put(onFetchBreedsSuccess(breeds));
   } catch (error: any) {
     yield put(onFetchBreedsError(error?.message || "Error fetching breeds"));
