@@ -33,7 +33,7 @@ import MatchingDogModal from "../MatchingDogModal";
 const SearchPage: FC = () => {
   const dispatch = useAppDispatch();
   const dogsState = useAppSelector((state) => state.dogs);
-  const { dogDetails, isLoading, queryParams, favorites, matchingDog } =
+  const { dogDetails, isLoading, queryParams, favorites, matchingDog, breeds } =
     dogsState;
 
   const [_searchParams, setSearchParams] = useSearchParams();
@@ -167,6 +167,7 @@ const SearchPage: FC = () => {
                     <BreedsAutocomplete
                       setBreeds={setSelectedBreeds}
                       selectedBreeds={selectedBreeds}
+                      breeds={breeds}
                     />
                   </Box>
                   <Box
