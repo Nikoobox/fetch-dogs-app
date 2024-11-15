@@ -1,33 +1,17 @@
-import { SyntheticEvent, useState, useEffect } from "react";
+import { SyntheticEvent, FC } from "react";
 import { Autocomplete, TextField } from "@mui/material";
-import { fetchBreedsAPI } from "../../api";
 
-const BreedsAutocomplete = ({
-  setBreeds,
-  selectedBreeds,
-}: {
+interface Props {
   setBreeds: (breeds: string[]) => void;
   selectedBreeds: string[];
-}) => {
-  const [breeds, setBreedsList] = useState<string[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  breeds: string[];
+}
 
-  useEffect(() => {
-    const loadBreeds = async () => {
-      setLoading(true);
-      try {
-        const fetchedBreeds = await fetchBreedsAPI();
-        setBreedsList(fetchedBreeds);
-      } catch (error) {
-        console.error("Error fetching breeds:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadBreeds();
-  }, []);
-
+const BreedsAutocomplete: FC<Props> = ({
+  setBreeds,
+  selectedBreeds,
+  breeds,
+}: Props) => {
   const handleChange = (
     _event: SyntheticEvent<Element, Event>,
     value: string[]
@@ -41,7 +25,6 @@ const BreedsAutocomplete = ({
       options={breeds}
       limitTags={5}
       getOptionLabel={(option) => option}
-      loading={loading}
       value={selectedBreeds}
       onChange={handleChange}
       renderInput={(params) => (
